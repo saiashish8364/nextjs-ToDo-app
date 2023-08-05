@@ -6,8 +6,7 @@ function Home() {
   const task = useRef();
   const dispatch = useDispatch();
   const todo = useSelector((state) => state.taskData.pending);
-  const todoRead = useSelector((state) => state.taskData.completed);
-  console.log(todoRead);
+
   function taskSubmitHandler(e) {
     e.preventDefault();
     dispatch(todoActions.addTodo(String(task.current.value)));
@@ -60,7 +59,7 @@ function Home() {
               <button
                 id={task.id}
                 style={{
-                  marginLeft: "50%",
+                  marginLeft: "35%",
                   height: "30px",
                   width: "100px",
                 }}
