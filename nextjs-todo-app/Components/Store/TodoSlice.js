@@ -1,10 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const todoDatabase = {
-  pending: [
-    { id: "1", todo: "test1" },
-    { id: "2", todo: "test2" },
-  ],
+  pending: [],
   completed: [],
 };
 
@@ -13,11 +10,12 @@ const todoSlice = createSlice({
   initialState: todoDatabase,
   reducers: {
     addTodo(state, action) {
+      const incomingData = action.payload;
       state.pending = [
         ...state.pending,
         {
-          id: String(Math.random()),
-          todo: String(action.payload),
+          id: String(incomingData.id),
+          todo: String(incomingData.todo),
         },
       ];
     },
@@ -40,5 +38,6 @@ const todoSlice = createSlice({
     },
   },
 });
+
 export const todoActions = todoSlice.actions;
 export default todoSlice.reducer;

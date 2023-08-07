@@ -1,15 +1,64 @@
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { todoActions } from "@/Components/Store/TodoSlice";
-function Home() {
+import { MongoClient } from "mongodb";
+let count = 0;
+function Home(props) {
   const task = useRef();
   const dispatch = useDispatch();
   const todo = useSelector((state) => state.taskData.pending);
+  useEffect(
+    () => {
+      async function fetchData() {
+        async function loadData() {
+          const response = await fetch("/api/todos-get", {
+            method: "GET",
+            headers: {
+              "content-type": "application/json",
+            },
+          });
+          const data = await response.json();
+          console.log(data);
+          return data;
+        }
 
-  function taskSubmitHandler(e) {
+        try {
+          const inData = await loadData();
+          for (let i = 0; i < inData.length; i++) {
+            let data = {
+              id: inData[i]._id,
+              todo: inData[i].todo,
+            };
+            dispatch(todoActions.addTodo(data));
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+      if (count === 0) {
+        count = count + 1;
+        fetchData();
+      }
+    },
+    //this is a comment
+    []
+  );
+  async function taskSubmitHandler(e) {
     e.preventDefault();
-    dispatch(todoActions.addTodo(String(task.current.value)));
+    const response = await fetch("/api/todos-post", {
+      method: "POST",
+      body: JSON.stringify({ todo: task.current.value }),
+      headers: {
+        "content-type": "application/json",
+      },
+    });
+    const data = await response.json();
+    const storeData = {
+      id: data.insertedId,
+      todo: String(task.current.value),
+    };
+    dispatch(todoActions.addTodo(storeData));
     task.current.value = "";
   }
   function markAsReadHandler(e) {
@@ -111,4 +160,23 @@ function Home() {
     </>
   );
 }
+
+export async function getStaticProps() {
+  const client = await MongoClient.connect(
+    "mongodb+srv://ashish8364:Ashish143@cluster0.oovrhrs.mongodb.net/pendingTodo?retryWrites=true&w=majority"
+  );
+  const db = client.db();
+  const todoCollections = db.collection("pendingTodo");
+  const todos = await todoCollections.find().toArray();
+  client.close();
+  return {
+    props: {
+      todos: todos.map((todo) => ({
+        id: todo._id.toString(),
+        todo: todo.todo,
+      })),
+    },
+  };
+}
+
 export default Home;
