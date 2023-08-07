@@ -19,7 +19,6 @@ function Home(props) {
             },
           });
           const data = await response.json();
-          console.log(data);
           return data;
         }
 
@@ -29,6 +28,7 @@ function Home(props) {
             let data = {
               id: inData[i]._id,
               todo: inData[i].todo,
+              todoStatus: inData[i].todoStatus,
             };
             dispatch(todoActions.addTodo(data));
           }
@@ -48,7 +48,10 @@ function Home(props) {
     e.preventDefault();
     const response = await fetch("/api/todos-post", {
       method: "POST",
-      body: JSON.stringify({ todo: task.current.value }),
+      body: JSON.stringify({
+        todo: task.current.value,
+        todoStatus: "incomplete",
+      }),
       headers: {
         "content-type": "application/json",
       },
@@ -57,6 +60,7 @@ function Home(props) {
     const storeData = {
       id: data.insertedId,
       todo: String(task.current.value),
+      todoStatus: "incomplete",
     };
     dispatch(todoActions.addTodo(storeData));
     task.current.value = "";
@@ -174,6 +178,7 @@ export async function getStaticProps() {
       todos: todos.map((todo) => ({
         id: todo._id.toString(),
         todo: todo.todo,
+        todoStatus: todo.todoStatus,
       })),
     },
   };
