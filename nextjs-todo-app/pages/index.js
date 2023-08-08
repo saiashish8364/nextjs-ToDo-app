@@ -97,11 +97,20 @@ function Home(props) {
     dispatch(todoActions.markAsReadTodo(markedTodo));
     setRefresh((prev) => !prev);
   }
-  function deleteHandler(e) {
+  async function deleteHandler(e) {
+    const deleteId = e.target.id;
+    const response = await fetch(`/api/todos-delete`, {
+      method: "DELETE",
+      body: JSON.stringify({ id: deleteId }),
+    });
+    const data = await response.json();
+    console.log(data);
     const newTodos = todo.filter(
       (item) => String(item.id) !== String(e.target.id)
     );
     dispatch(todoActions.deleteTodo(newTodos));
+    count = 0;
+    setRefresh((prev) => !prev);
   }
   function editHandler(e) {
     const editItem = todo.filter(
