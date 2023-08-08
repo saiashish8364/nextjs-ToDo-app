@@ -16,6 +16,7 @@ const todoSlice = createSlice({
         {
           id: String(incomingData.id),
           todo: String(incomingData.todo),
+          todoStatus: "incomplete",
         },
       ];
     },
@@ -24,17 +25,21 @@ const todoSlice = createSlice({
       state.completed = [
         ...state.completed,
         {
-          id: data[0].id,
-          todo: data[0].todo,
+          id: data.id,
+          todo: data.todo,
+          todoStatus: "complete",
         },
       ];
       const newTodos = state.pending.filter(
-        (item) => String(item.id) !== String(data[0].id)
+        (item) => String(item.id) !== String(data.id)
       );
       state.pending = newTodos;
     },
     deleteTodo(state, action) {
       state.pending = action.payload;
+    },
+    removeStoreData(state) {
+      state.pending = [];
     },
   },
 });
