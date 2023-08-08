@@ -46,9 +46,9 @@ function Home(props) {
         }
       }
       fetchData();
-      if (count === 0) {
-        count = count + 1;
-      }
+      // if (count === 0) {
+      //   count = count + 1;
+      // }
     },
     //this is a comment
     [refresh]
@@ -78,7 +78,6 @@ function Home(props) {
     const markedTodo = todo.filter(
       (item) => String(item.id) === String(e.target.id)
     );
-    console.log(markedTodo);
     const response = await fetch("/api/todos-update", {
       method: "PUT",
       body: JSON.stringify({
@@ -182,7 +181,7 @@ function Home(props) {
             fontSize: "1.65rem",
           }}
         >
-          Task's
+          Incompleted Task's
         </header>
         <ul
           style={{

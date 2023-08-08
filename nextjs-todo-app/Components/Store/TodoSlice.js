@@ -20,6 +20,17 @@ const todoSlice = createSlice({
         },
       ];
     },
+    addCompletedTodo(state, action) {
+      const data = action.payload;
+      state.completed = [
+        ...state.completed,
+        {
+          id: data.id,
+          todo: data.todo,
+          todoStatus: "complete",
+        },
+      ];
+    },
     markAsReadTodo(state, action) {
       const data = action.payload;
       state.completed = [
@@ -40,6 +51,7 @@ const todoSlice = createSlice({
     },
     removeStoreData(state) {
       state.pending = [];
+      state.completed = [];
     },
   },
 });
